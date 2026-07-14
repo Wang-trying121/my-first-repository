@@ -98,5 +98,5 @@ if prompt:
             responce_messages.chat_message('assistant').write(full_response)
 
     st.session_state.messages.append({"role": "assistant", "content": full_response})
-
+#模拟
 
