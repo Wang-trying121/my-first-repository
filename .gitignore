@@ -1,0 +1,91 @@
+# ================================
+# 🔴 最关键的：API密钥和密码文件
+# ================================
+.env                    # 环境变量文件（最常用！）
+.env.local              # 本地环境变量
+.env.*.local            # 所有本地环境变量
+*.key                   # 所有.key结尾的文件
+*.pem                   # 所有.pem结尾的密钥文件
+*.p12                   # 所有.p12证书文件
+secrets.json            # 密钥配置文件
+config/secrets.json     # 放在config文件夹里的密钥
+api_key.txt             # 明文API密钥文件
+secret_key.txt          # 明文密钥文件
+credentials.json        # 凭证文件
+*secret*.json           # 所有带secret字样的json文件
+*key*.json              # 所有带key字样的json文件
+
+# ================================
+# 🟡 Python项目
+# ================================
+__pycache__/            # Python缓存文件夹
+*.py[cod]               # 编译后的Python文件
+*.so                    # 编译后的库文件
+.venv/                  # 虚拟环境文件夹（重要！）
+venv/
+env/
+ENV/
+dist/                   # 打包后的文件夹
+build/
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ================================
+# 🟢 Node.js / JavaScript项目
+# ================================
+node_modules/           # npm依赖包（最重要！）
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+package-lock.json       # 可选：如果你想保留可以删掉这行
+yarn.lock               # 可选：同上面
+.env
+.env.local
+
+# ================================
+# 🔵 编辑器文件（不要上传）
+# ================================
+.vscode/                # VS Code个人设置
+.idea/                  # WebStorm/PhpStorm设置
+*.swp                   # Vim临时文件
+*.swo
+.DS_Store               # macOS系统文件
+Thumbs.db               # Windows缩略图文件
+desktop.ini
+
+# ================================
+# 🟣 日志和临时文件
+# ================================
+*.log
+*.tmp
+*.temp
+*.cache
+logs/
+tmp/
+temp/
+
+# ================================
+# ⚫ Java / Android项目
+# ================================
+*.class
+*.jar
+*.war
+*.ear
+target/
+build/
+.gradle/
+gradle/
+
+# ================================
+# 🟠 C/C++项目
+# ================================
+*.o
+*.obj
+*.exe
+*.dll
+*.so
+*.dylib
+Debug/
+Release/
