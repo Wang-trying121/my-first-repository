@@ -130,8 +130,8 @@ with st.sidebar:
         # 新建会话
         if st.session_state.messages:
             st.session_state.messages = []
-            st.session_state.new_name = "暂无昵称"
-            st.session_state.new_character = "暂无人设"
+            st.session_state.new_name = "小玉"
+            st.session_state.new_character = "大学生"
             st.session_state.current_time = generate_filename()
 
             st.rerun()
@@ -162,13 +162,12 @@ with st.sidebar:
 
     st.header('伴侣信息')
 
-
     # 昵称
-    new_name = st.text_input('昵称', placeholder='请输入伴侣的昵称',value = '小玉')
+    new_name = st.text_input('昵称', placeholder='请输入伴侣的昵称', value=st.session_state.new_name)
     st.session_state.new_name = new_name
     # 人设
 
-    new_character = st.text_area('人设', placeholder='请输入伴侣的人设',value = '大学生')
+    new_character = st.text_area('人设', placeholder='请输入伴侣的人设', value=st.session_state.new_character)
     st.session_state.new_character = new_character
 
 
@@ -180,34 +179,39 @@ with st.sidebar:
 prompt = st.chat_input('请输入你的问题')
 #星号可以将列表展开,将列表中的元素逐个传入
 if prompt:
-    st.session_state.messages.append({"role": "user", "content": prompt})
-    st.chat_message('user').write(prompt)
-    # 与AI大模型交互
-    response = client.chat.completions.create(
-        model="deepseek-v4-flash",
-        messages=[
-            {"role": "system", "content":setting %(st.session_state.new_name, st.session_state.new_character)},
-            *st.session_state.messages
-        ],
-        stream=True,
+    if st.session_state.new_name and st.session_state.new_character:
 
-        extra_body={"thinking": {"type": "disabled"}}
-    )
 
-    #这是非流式输出的AI回复
-    # print(f'这是用户输入：{prompt}')
-    # print(f'这是AI输出：{response.choices[0].message.content}')
-    # st.chat_message('assistant').write(response.choices[0].message.content)
 
-    # 这是流式输出的AI回复
-    responce_messages = st.empty()
-    full_response = ''
-    for chunk in response:
-        if chunk.choices[0].delta.content is not None:
-            full_response += chunk.choices[0].delta.content
-            responce_messages.chat_message('assistant').write(full_response)
+        st.session_state.messages.append({"role": "user", "content": prompt})
+        st.chat_message('user').write(prompt)
+        # 与AI大模型交互
+        response = client.chat.completions.create(
+            model="deepseek-v4-flash",
+            messages=[
+                {"role": "system", "content":setting %(st.session_state.new_name, st.session_state.new_character)},
+                *st.session_state.messages
+            ],
+            stream=True,
 
-    st.session_state.messages.append({"role": "assistant", "content": full_response})
+            extra_body={"thinking": {"type": "disabled"}}
+        )
 
+        #这是非流式输出的AI回复
+        # print(f'这是用户输入：{prompt}')
+        # print(f'这是AI输出：{response.choices[0].message.content}')
+        # st.chat_message('assistant').write(response.choices[0].message.content)
+
+        # 这是流式输出的AI回复
+        responce_messages = st.empty()
+        full_response = ''
+        for chunk in response:
+            if chunk.choices[0].delta.content is not None:
+                full_response += chunk.choices[0].delta.content
+                responce_messages.chat_message('assistant').write(full_response)
+
+        st.session_state.messages.append({"role": "assistant", "content": full_response})
+    else:
+        st.text('请输入伴侣的昵称和人设')
 
 #模拟
