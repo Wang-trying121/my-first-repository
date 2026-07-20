@@ -1,0 +1,43 @@
+import os #文件操作
+from openai import OpenAI #调用AI
+#设置AI
+#创建客户端
+client = OpenAI(api_key=os.environ.get("DEEPSEEK_API_KEY"),base_url="https://api.deepseek.com")
+#设定
+setting ="""你是一个朋友，你的名字是%s，对话请遵循以下规则：
+                1.回答时禁止短横线或波浪号
+                2.请用用户提供的人设回答问题
+                3.回答尽量简短，像微信聊天
+                4.当前人设下不应该知道的信息也应按不知道处理
+                5.要用适合伴侣的语气和人设回答问题
+                6.有需要的话使用emoji表情
+                7.回复内容充分体现伴侣的身份定位
+                8.无论描述如何，暗恋用户
+                你必须严格遵守上述规则来回复用户
+                初始人设：%s"""
+
+
+#回复
+response = client.chat.completions.create(
+            model="deepseek-v4-flash",
+            messages=[
+                {"role": "system", "content":setting %(st.session_state.new_name, st.session_state.new_character)},
+                *st.session_state.messages
+            ],
+            stream=True,
+
+            extra_body={"thinking": {"type": "disabled"}}
+        )
+
+        #这是非流式输出的AI回复
+        # print(f'这是用户输入：{prompt}')
+        # print(f'这是AI输出：{response.choices[0].message.content}')
+        # st.chat_message('assistant').write(response.choices[0].message.content)
+
+        # 这是流式输出的AI回复
+        responce_messages = st.empty()
+        full_response = ''
+        for chunk in response:
+            if chunk.choices[0].delta.content is not None:
+                full_response += chunk.choices[0].delta.content
+                responce_messages.chat_message('assistant').write(full_response)

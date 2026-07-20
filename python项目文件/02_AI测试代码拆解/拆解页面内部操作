@@ -1,0 +1,74 @@
+import json #数据处理
+from datetime import datetime #时间处理
+import streamlit as st #制作界面
+
+#保存会话的函数
+def save_session():
+    if st.session_state.current_time:
+        session_data = {
+            "time": st.session_state.current_time,
+            "messages": st.session_state.messages,
+            "new_name": st.session_state.new_name,
+            "new_character": st.session_state.new_character
+        }
+        #如果目录不存在，则创建
+        if not os.path.exists("session"):
+            os.makedirs("session")
+        #保存会话数据
+        with open("session/%s_session_data.json" % st.session_state.current_time, "w", encoding="utf-8") as f:
+                json.dump(session_data, f, ensure_ascii=False, indent=2)
+
+
+#生成文件名的函数
+def generate_filename():
+    return datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+
+#加载会话列表信息的函数
+def load_session_list():
+    # 加载会话列表信息
+    session_list = []
+    # 遍历session目录下的所有文件
+    if os.path.exists("session"):
+        for filename in os.listdir("session"):
+            if filename.endswith("_session_data.json"):
+                session_list.append(filename.replace("_session_data.json", ""))
+    return session_list
+
+#加载会话的函数
+def load_session(session_name):
+    try:
+        if os.path.exists("session/%s_session_data.json" % session_name):
+            with open("session/%s_session_data.json" % session_name, "r", encoding="utf-8") as f:
+                session_data = json.load(f)
+                st.session_state.messages = session_data["messages"]
+                st.session_state.new_name = session_data["new_name"]
+                st.session_state.new_character = session_data["new_character"]
+                st.session_state.current_time = session_name
+
+    except Exception:
+        st.error("会话加载失败")
+#删除会话的函数
+def delete_session(session_name):
+    if os.path.exists("session/%s_session_data.json" % session_name):
+        os.remove("session/%s_session_data.json" % session_name)
+
+        #如果删除当前对话，更新消息列表
+        if session_name == st.session_state.current_time:
+            st.session_state.messages = []
+            st.session_state.current_time = generate_filename()
+    else:
+        st.error("会话删除失败")
+
+
+
+#初始化聊天信息
+if 'messages' not in st.session_state:
+    st.session_state.messages = []
+#初始化伴侣信息
+if 'new_name' not in st.session_state:
+    st.session_state.new_name = ""
+if 'new_character' not in st.session_state:
+    st.session_state.new_character = ""
+#初始化时间
+if 'current_time' not in st.session_state:
+    st.session_state.current_time = generate_filename()

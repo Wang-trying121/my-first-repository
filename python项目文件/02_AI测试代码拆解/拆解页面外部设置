@@ -1,0 +1,71 @@
+import streamlit as st #制作界面
+#界面的初始设置
+st.set_page_config(
+    page_title="AI智能伴侣",
+    page_icon="🤖",
+    layout="wide",
+    initial_sidebar_state="expanded",
+    menu_items={
+
+    }
+)
+#大标题
+st.title('AI智能伴侣')
+st.write('欢迎使用AI智能伴侣')
+st.write('本AI智能伴侣可以进行对话，也可以进行一些简单的计算')
+#LOGO
+st.logo("./资源/可爱小人LOGO设计 无背景.png")
+
+
+with st.sidebar:
+    st.write('会话信息')
+    if st.button("保存并新建会话", width='stretch',icon="💾"):
+        save_session()
+        st.write('会话已保存')
+        # 新建会话
+        if st.session_state.messages:
+            st.session_state.messages = []
+            st.session_state.new_name = "小玉"
+            st.session_state.new_character = "大学生"
+            st.session_state.current_time = generate_filename()
+
+            st.rerun()
+
+    #展示会话历史
+    st.text("会话历史")
+    session_list = load_session_list()
+    for session in session_list:
+        col1,col2 = st.columns([9,1])
+        with col1:
+            # 会话名称
+            #三元运算符的用法
+            if st.button(session, width='stretch', key=session + "_load", icon="📄", type="primary" if session == st.session_state.current_time else "secondary"):
+                # 加载会话
+                load_session(session)
+                st.rerun()
+        with col2:
+            # 会话删除
+            if st.button("", key=session + "_delete", width='stretch',icon = "🗑️"):
+                # 删除会话
+                delete_session(session)
+                st.rerun()
+
+
+
+
+
+
+    st.header('伴侣信息')
+    #名称
+    new_name = st.text_input('昵称', placeholder='请输入伴侣的昵称', value=st.session_state.new_name)
+    st.session_state.new_name = new_name
+    # 人设
+
+    new_character = st.text_area('人设', placeholder='请输入伴侣的人设', value=st.session_state.new_character)
+    st.session_state.new_character = new_character
+
+
+prompt = st.chat_input('请输入你的问题')
+ st.session_state.messages.append({"role": "assistant", "content": full_response})
+    else:
+        st.text('请输入伴侣的昵称和人设')
