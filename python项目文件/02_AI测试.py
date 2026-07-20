@@ -1,8 +1,13 @@
-import streamlit as st
-import os
-from openai import OpenAI
-import json
-from datetime import datetime
+
+#第一部分，引入
+import streamlit as st #制作界面
+import os #文件操作
+from openai import OpenAI #调用AI
+import json #数据处理
+from datetime import datetime #时间处理
+
+
+#界面的初始设置
 st.set_page_config(
     page_title="AI智能伴侣",
     page_icon="🤖",
